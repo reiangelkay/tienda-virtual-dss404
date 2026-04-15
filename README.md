@@ -1,50 +1,38 @@
-# Tienda Virtual - Desafío Práctico 02
+# Gundam Store - Desafío Práctico 02 (DSS404)
 
-Este proyecto consiste en un sistema de autenticación seguro para una tienda virtual básica, desarrollado para la asignatura de **Desarrollo de Aplicaciones Web con Software Interpretado en el Servidor (DSS404)**.
+## Características Técnicas
 
-El sistema permite el registro de clientes, el inicio de sesión mediante credenciales cifradas y el acceso a un panel privado con persistencia de datos a través de variables de sesión.
+- **Seguridad Criptográfica:** Implementación de `password_hash()` (algoritmo BCRYPT) para el registro y `password_verify()` para el inicio de sesión.
+- **Persistencia de Datos:** Manejo avanzado de `$_SESSION` para el carrito de compras y la autenticación de usuarios.
+- **Acceso a Datos Robusto:** Uso de **PDO (PHP Data Objects)** con consultas preparadas para prevenir inyecciones SQL.
+- **Integridad de Transacciones:** El proceso de pago utiliza `beginTransaction()` y `rollBack()` para asegurar que el stock solo se descuente si el pago se registra correctamente.
+- **Experiencia de Usuario (UX):** URLs amigables (sin extensión .php) y página de error 404 personalizada con temática de la serie.
 
-## Funcionalidades Principales
+## Stack Tecnológico
 
-- **Registro de Usuarios:** Captura de datos (nombre, correo y clave) con validación del lado del servidor.
-- **Seguridad Criptográfica:** Implementación de `password_hash()` para el almacenamiento de contraseñas y `password_verify()` para la autenticación.
-- **Gestión de Sesiones:** Uso de `session_start()` para proteger rutas privadas y personalizar la experiencia del usuario.
-- **Acceso a Datos:** Conexión robusta mediante **PDO (PHP Data Objects)** con manejo de excepciones.
+* **Backend:** PHP 8.x
+* **Base de Datos:** MariaDB / MySQL
+* **Servidor:** Apache (con mod_rewrite activado)
+* **Frontend:** HTML5 / CSS3 (Diseño responsivo y temático)
 
-## Tecnologías Utilizadas
+## Estructura del Hangar (Archivos)
 
-* **Lenguaje:** PHP 8.x
-* **Base de Datos:** MySQL / MariaDB
-* **Interfaz:** HTML5 y CSS3 (Diseño responsivo)
-* **Entorno:** XAMPP / GitHub Desktop / VS Code
+- `catalogo`: Galería interactiva de Mobile Suits.
+- `carrito`: Gestión de unidades seleccionadas y cálculo de totales.
+- `finalizar_compra`: Motor de transacciones y actualización de inventario.
+- `panel_tienda`: Historial de adquisiciones del piloto.
+- `login` / `registro`: Puertas de acceso seguras.
+- `404`: Protocolo de emergencia para rutas no encontradas.
 
-## Requisitos e Instalación
+## Guía de Despliegue
 
-### 1. Base de Datos
-Importa el siguiente script en tu gestor (phpMyAdmin) para crear la estructura necesaria:
+1. **Base de Datos:** Importar el archivo `Database/tienda_virtual.sql` en phpMyAdmin.
+2. **Imágenes:** Asegurar que las 5 imágenes de los modelos (RX-78-2, Aerial, Unicorn, Wing y Strike Freedom) estén en la carpeta `/img`.
+3. **Servidor Local:** Colocar el proyecto en `htdocs` y verificar que el archivo `.htaccess` esté presente en la raíz.
+4. **Configuración:** Revisar `conexion.php` para ajustar las credenciales de la base de datos si es necesario.
 
-```sql
--- 1. Crear la base de datos y decirle a MySQL que la use
-CREATE DATABASE IF NOT EXISTS tienda_virtual;
-USE tienda_virtual;
+## Equipo de Pilotos
+* **Abel Stuardo Lopez Velasquez** - LV231728
 
--- 2. Crear la tabla principal de usuarios (clientes)
-CREATE TABLE clientes (
-    id_cliente INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_completo VARCHAR(100) NOT NULL,
-    correo VARCHAR(100) NOT NULL UNIQUE,
-    contrasena VARCHAR(255) NOT NULL -- 255 es el estándar seguro para password_hash
-);
-
--- 3. Crear la tabla para el resumen de compras (requisito de la guía)
-CREATE TABLE compras (
-    id_compra INT AUTO_INCREMENT PRIMARY KEY,
-    id_cliente INT NOT NULL,
-    producto VARCHAR(100) NOT NULL,
-    precio DECIMAL(10,2) NOT NULL,
-    fecha_compra DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
-    -- Llave foránea: Si borras un cliente, se borran sus compras
-    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
+---
+© 2026 - Universidad Don Bosco, Facultad de Ingeniería.
