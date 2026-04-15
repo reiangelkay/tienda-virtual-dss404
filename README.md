@@ -1,4 +1,4 @@
-# 🛒 Tienda Virtual - Desafío Práctico 02
+# Tienda Virtual - Desafío Práctico 02
 
 Este proyecto consiste en un sistema de autenticación seguro para una tienda virtual básica, desarrollado para la asignatura de **Desarrollo de Aplicaciones Web con Software Interpretado en el Servidor (DSS404)**.
 
@@ -11,7 +11,7 @@ El sistema permite el registro de clientes, el inicio de sesión mediante creden
 - **Gestión de Sesiones:** Uso de `session_start()` para proteger rutas privadas y personalizar la experiencia del usuario.
 - **Acceso a Datos:** Conexión robusta mediante **PDO (PHP Data Objects)** con manejo de excepciones.
 
-## 🛠️ Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 * **Lenguaje:** PHP 8.x
 * **Base de Datos:** MySQL / MariaDB
