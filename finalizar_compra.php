@@ -64,11 +64,21 @@ try {
     $mensaje_exito = "¡Operación exitosa! Tus Gunplas han sido asignados y están en preparación.";
 
 } catch (Exception $e) {
-    // 7. ROLLBACK: Algo falló. Revertimos cualquier cambio a medias en la base de datos
+    // ESTE CATCH ES PARA NUESTROS ERRORES (ej. Falta de stock)
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    $mensaje_error = $e->getMessage();
+    // Mostramos el mensaje tal cual porque nosotros lo escribimos
+    $mensaje_error = $e->getMessage(); 
+
+} catch (PDOException $e) {
+    // ESTE CATCH ES PARA ERRORES DE MYSQL (Base de datos caída, sintaxis, etc)
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    // Ocultamos el error real y mostramos esto
+    $mensaje_error = "Hubo un problema de comunicación al registrar tu compra. No se ha realizado ningún cobro.";
+    
 } finally {
     Database::disconnect();
 }

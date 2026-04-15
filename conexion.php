@@ -18,8 +18,15 @@ class Database {
                 );
                 // Activar el modo de excepciones para capturar errores fácilmente
                 self::$cont->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            } catch (PDOException $e) {
-                die("Error crítico de conexión a la tienda: " . $e->getMessage());
+           } catch (PDOException $e) {
+                // En lugar de die("Error: " . $e->getMessage()); usamos un mensaje limpio
+                die("
+                    <div style='text-align:center; padding: 50px; font-family: sans-serif;'>
+                        <h2 style='color:#e74c3c;'>Problema de Conexión</h2>
+                        <p>No podemos acceder al Hangar de Gunplas en este momento.</p>
+                        <p>Por favor, avisa al equipo de soporte o intenta de nuevo más tarde.</p>
+                    </div>
+                ");
             }
         }
         return self::$cont;

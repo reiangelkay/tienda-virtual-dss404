@@ -21,29 +21,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mensaje = "El formato del correo no es válido.";
         $tipo_mensaje = "red";
     } else {
-        try {
-            // 3. El requisito del Desafío: Encriptación segura
+      try {
             $hash = password_hash($contrasena, PASSWORD_DEFAULT);
-
-            // 4. Conexión PDO
             $pdo = Database::connect();
-
-            // 5. Consulta preparada para evitar inyección SQL
             $sql = "INSERT INTO clientes (nombre_completo, correo, contrasena) VALUES (?, ?, ?)";
             $stmt = $pdo->prepare($sql);
-            
-            // Ejecutar pasando los valores reales
             $stmt->execute([$nombre_completo, $correo, $hash]);
 
             $mensaje = "¡Registro exitoso! Ya puedes iniciar sesión en la tienda.";
             $tipo_mensaje = "green";
 
         } catch (PDOException $e) {
-            // El código 23000 salta si intentan registrar un correo que ya existe (UNIQUE)
+            // Evaluamos el código exacto del error, pero mostramos texto amigable
             if ($e->getCode() == 23000) {
-                $mensaje = "Este correo ya está registrado. Intenta iniciar sesión.";
+                $mensaje = "Ese correo electrónico ya está registrado. Por favor, intenta iniciar sesión.";
+            } elseif ($e->getCode() == 1045 || $e->getCode() == 2002) {
+                $mensaje = "Nuestros servidores están en mantenimiento. Intenta de nuevo en unos minutos.";
             } else {
-                $mensaje = "Error en el servidor: " . $e->getMessage();
+                // Un error desconocido genérico que no expone código SQL
+                $mensaje = "Ocurrió un problema inesperado al crear tu cuenta. Intenta más tarde.";
             }
             $tipo_mensaje = "red";
         } finally {

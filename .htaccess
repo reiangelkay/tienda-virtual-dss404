@@ -1,0 +1,15 @@
+# 1. Tu interceptor de errores (La cabina del Gundam)
+ErrorDocument 404 /tienda_virtual/404.php
+
+# 2. Activar el motor de reescritura de URLs
+RewriteEngine On
+
+# 3. Reglas para ocultar la extensión .php
+# Si lo que el usuario escribió NO es una carpeta real...
+RewriteCond %{REQUEST_FILENAME} !-d
+# ...y NO es un archivo que ya existe con ese nombre exacto...
+RewriteCond %{REQUEST_FILENAME} !-f
+# ...pero SÍ existe un archivo PHP con ese nombre...
+RewriteCond %{REQUEST_FILENAME}.php -f
+# ...entonces carga el archivo PHP en silencio, sin cambiar la URL visible.
+RewriteRule ^(.*)$ $1.php [L,QSA]
