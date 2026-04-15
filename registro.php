@@ -8,20 +8,34 @@ $tipo_mensaje = ""; // Para darle color al mensaje (verde o rojo)
 // 2. Verificar si el usuario envió el formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // Limpiar los datos entrantes
+    // Limpiar los datos entrantes (No le hacemos trim a la contraseña por seguridad)
     $nombre_completo = trim($_POST['nombre_completo'] ?? '');
     $correo = trim($_POST['correo'] ?? '');
-    $contrasena = trim($_POST['contrasena'] ?? '');
+    $contrasena = $_POST['contrasena'] ?? '';
 
-    // Validación estricta
+    // Validación estricta del lado del servidor
     if (empty($nombre_completo) || empty($correo) || empty($contrasena)) {
         $mensaje = "Todos los campos son obligatorios.";
         $tipo_mensaje = "red";
+        
+    // Validar que el nombre SOLO contenga letras y espacios (incluye acentos y la ñ)
+    } elseif (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/", $nombre_completo)) {
+        $mensaje = "Error: El nombre solo debe contener letras y espacios.";
+        $tipo_mensaje = "red";
+        
+    // Validar el formato oficial de un correo electrónico
     } elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
         $mensaje = "El formato del correo no es válido.";
         $tipo_mensaje = "red";
+        
+    // Validar que la contraseña sea robusta (mínimo 6 caracteres)
+    } elseif (strlen($contrasena) < 6) {
+        $mensaje = "Error: La contraseña debe tener al menos 6 caracteres.";
+        $tipo_mensaje = "red";
+        
     } else {
-      try {
+        // Si pasa TODAS las validaciones, procedemos a guardar en la base de datos
+        try {
             $hash = password_hash($contrasena, PASSWORD_DEFAULT);
             $pdo = Database::connect();
             $sql = "INSERT INTO clientes (nombre_completo, correo, contrasena) VALUES (?, ?, ?)";
@@ -74,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h2>Crear Cuenta</h2>
 
     <?php if ($mensaje): ?>
-        <div class="mensaje" style="color: <?php echo $tipo_mensaje; ?>; border: 1px solid <?php echo $tipo_mensaje; ?>;">
+        <div class="mensaje" style="color: <?php echo $tipo_mensaje; ?>; border: 1px solid <?php echo $tipo_mensaje; ?>; background-color: <?php echo $tipo_mensaje === 'red' ? '#ffe6e6' : '#e6ffe6'; ?>;">
             <?php echo $mensaje; ?>
         </div>
     <?php endif; ?>
